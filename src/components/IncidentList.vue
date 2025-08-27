@@ -164,11 +164,11 @@ export default {
     .incident-item {
         display: flex;
 
-        &:first-child .incident-timeline{
+        &:first-child .incident-timeline {
             border-radius: 10px 10px 0 0;
         }
 
-        &:last-child .incident-timeline{
+        &:last-child .incident-timeline {
             border-radius: 0 0 10px 10px;
         }
 
@@ -179,7 +179,7 @@ export default {
             background-color: #f3f3f3;
 
             body.dark & {
-                background-color: #191f29
+                background-color: #191f29;
             }
 
             .incident-timeline-icon {
@@ -197,7 +197,7 @@ export default {
 
                 body.dark & {
                     border: solid 2px #444444;
-                    background-color: #444444
+                    background-color: #444444;
                 }
 
                 .primary {
@@ -237,7 +237,7 @@ export default {
             margin: 10px 10px 10px 24px;
 
             body.dark & {
-                background-color: #0d1117
+                background-color: #0d1117;
             }
 
             .incident-header {
