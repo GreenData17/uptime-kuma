@@ -280,7 +280,7 @@
                 </div>
             </template>
 
-            <!-- Incident History with improved styling -->
+            <!-- Incident History with improved styling TODO: fix this -->
             <div class="mb-4 incident-history">
                 <h2>{{ $t("Incident History") }}</h2>
                 <div v-if="isLoading">{{ $t("Loading") }}...</div>
@@ -298,8 +298,8 @@
                         <div class="incident-meta mt-3">
                             <div class="incident-date">
                                 <font-awesome-icon icon="calendar-alt" class="me-1" />
-                                {{ $t("Date Created") }}: {{ datetimeFormat(report.createdDate) }}
-                                <span class="text-muted">({{ dateFromNow(report.createdDate) }})</span>
+                                {{ $t("Date Created") }}: {{ datetimeFormat(report.created_date) }}
+                                <span class="text-muted">({{ dateFromNow(report.created_date) }})</span>
                             </div>
                             <div v-if="report.lastUpdatedDate" class="incident-updated">
                                 <font-awesome-icon icon="clock" class="me-1" />
@@ -370,10 +370,10 @@
                             :key="report._id"
                             class="big-padding"
                         >
-                            <h3>{{ (report._createdDate) }}</h3>
+                            <h3>{{ (report.created_date) }}</h3>
                             <hr />
-                            <h4>{{ report._title }}</h4>
-                            <p>{{ report._content }}</p>
+                            <h4>{{ report.title }}</h4>
+                            <p>{{ report.content }}</p>
                             <hr />
                             <br /><br />
                         </div>
@@ -865,18 +865,30 @@ export default {
         },
         async fetchIncidentReports() {
             this.isLoading = true;
-            try {
-                const socket = this.$root.getSocket();
 
-                socket.emit("getStatusPageIncidentHistory", this.slug, (data) => {
-                    if (data.ok) {
-                        this.incidentReports = data.incidents;
-                    } else {
-                        this.error = data.msg;
-                        console.error("Error fetching incident reports:", data.msg);
+            try {
+                if (this.editMode) {
+                    // WebSocket mode
+                    const socket = this.$root.getSocket?.();
+                    if (!socket) {
+                        throw new Error("Socket not initialized");
                     }
+
+                    socket.emit("getStatusPageIncidentHistory", this.slug, (data) => {
+                        if (data.ok) {
+                            this.incidentReports = data.incidents;
+                        } else {
+                            this.error = data.msg;
+                            console.error("Error fetching incident reports:", data.msg);
+                        }
+                        this.isLoading = false;
+                    });
+                } else {
+                    // REST API fallback
+                    const res = await axios.get(`/api/status-page/${this.slug}/incidents`);
+                    this.incidentReports = res.data.incidents || [];
                     this.isLoading = false;
-                });
+                }
             } catch (error) {
                 this.error = error;
                 console.error("Error fetching incident reports:", error);

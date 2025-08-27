@@ -5,13 +5,13 @@
         <div v-else-if="filteredReports.length">
             <div
                 v-for="report in filteredReports"
-                :key="report._id"
+                :key="report.id"
                 class="big-padding"
             >
-                <h3>{{ datetimeFormat(report._createdDate) }}</h3>
+                <h3>{{ datetimeFormat(report.createdDate) }}</h3>
                 <hr />
-                <h4>{{ report._title }}</h4>
-                <p>{{ report._content }}</p>
+                <h4>{{ report.title }}</h4>
+                <p>{{ report.content }}</p>
                 <hr />
                 <br /><br />
             </div>
@@ -21,9 +21,13 @@
 </template>
 
 <script>
+import axios from "axios";
+import dayjs from "dayjs";
+
 export default {
     data() {
         return {
+            slug: null,
             incidentReports: [],
             isLoading: false,
             error: null,
@@ -35,28 +39,41 @@ export default {
                 .slice() // Create a copy to avoid mutating the original array
                 .sort(
                     (a, b) =>
-                        new Date(b._createdDate) - new Date(a._createdDate),
+                        new Date(b.created_date) - new Date(a.created_date),
                 )
                 .slice(-25); // Get the last 25 sorted reports
         },
     },
 
     mounted() {
+        this.slug = this.$route.params.slug;
         this.fetchIncidentReports();
     },
     methods: {
         async fetchIncidentReports() {
             this.isLoading = true;
             try {
-                const response = await fetch("/api/incident-reports"); // Replace with your API endpoint
-                const data = await response.json();
-                this.incidentReports = data;
+                const res = await axios.get(`/api/status-page/${this.slug}/incidents`);
+                this.incidentReports = res.data.incidents || [];
             } catch (error) {
                 this.error = error;
                 console.error("Error fetching incident reports:", error);
             } finally {
                 this.isLoading = false;
             }
+        },
+
+        /**
+         * Return a value in a custom format
+         * @param {any} value Value to format
+         * @param {any} format Format to return value in
+         * @returns {string} Formatted string
+         */
+        datetimeFormat(value, format) {
+            if (value !== undefined && value !== "") {
+                return dayjs.utc(value).tz(this.timezone).format(format);
+            }
+            return "";
         },
     },
 };
