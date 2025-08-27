@@ -99,6 +99,8 @@ library.add(
     faClone,
     faCertificate,
     faCalendarAlt,
+    faExclamationCircle,
+    faInfoCircle
 );
 
 export { FontAwesomeIcon };

@@ -331,6 +331,12 @@
                 <PublicGroupList :edit-mode="enableEditMode" :show-tags="config.showTags" :show-certificate-expiry="config.showCertificateExpiry" />
             </div>
 
+            <div class="mb-4">
+                <h2>{{ $t("Incident Reports") }}</h2>
+
+                <IncidentList :slug="this.slug"/>
+            </div>
+
             <footer class="mt-5 mb-4">
                 <div class="custom-footer-text text-start">
                     <strong v-if="enableEditMode">{{ $t("Custom Footer") }}:</strong>
@@ -383,6 +389,7 @@ import { getResBaseURL } from "../util-frontend";
 import { STATUS_PAGE_ALL_DOWN, STATUS_PAGE_ALL_UP, STATUS_PAGE_MAINTENANCE, STATUS_PAGE_PARTIAL_DOWN, UP, MAINTENANCE } from "../util.ts";
 import Tag from "../components/Tag.vue";
 import VueMultiselect from "vue-multiselect";
+import IncidentList from "../components/IncidentList.vue";
 
 const toast = useToast();
 dayjs.extend(duration);
@@ -399,6 +406,7 @@ const favicon = new Favico({
 export default {
 
     components: {
+        IncidentList,
         PublicGroupList,
         ImageCropUpload,
         Confirm,
