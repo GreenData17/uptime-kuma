@@ -1,42 +1,41 @@
 <template>
     <a v-if="incidentReports.length !== 0 && hideViewHistoryPage === false" :href="slug + '/incidents'">View all incidents</a>
-    
-    <div class="incident-history" v-if="incidentReports.length">
+
+    <div v-if="incidentReports.length" class="incident-history">
         <div v-for="incident in incidentReports" :key="incident.id" class="incident-item">
             <div class="incident-timeline">
                 <div class="incident-timeline-icon">
                     <font-awesome-icon :icon="incidentIcon[incident.style]" :class="incident.style"></font-awesome-icon>
                 </div>
             </div>
-            
+
             <div class="incident-card">
                 <div class="incident-header">
                     <b>{{ incident.title }}</b>
                     <div class="incident-header-datetime">
                         <span>{{ $t("Date Created") }}: {{ $root.datetime(incident.createdDate) }} ({{ dateFromNow(incident.createdDate) }})</span>
-                        <br/>
+                        <br />
                         <span v-if="incident.lastUpdatedDate">{{ $t("Last Updated") }}: {{ $root.datetime(incident.lastUpdatedDate) }} ({{ dateFromNow(incident.lastUpdatedDate) }})</span>
                     </div>
                 </div>
-                <p>{{incident.content}}</p>
+                <p>{{ incident.content }}</p>
             </div>
         </div>
-        
+
         <div class="incident-timeline-end">
-            
         </div>
     </div>
-    <p v-else>{{ $t("NoIncidentOrError")}}</p>
+    <p v-else>{{ $t("NoIncidentOrError") }}</p>
 </template>
 
 <script>
 import axios from "axios";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import dayjs from "dayjs";
 
 export default {
     name: "IncidentList",
-    components: {FontAwesomeIcon},
+    components: { FontAwesomeIcon },
 
     props: {
         editMode: {
@@ -66,6 +65,21 @@ export default {
                 dark: "info-circle"
             }
         };
+    },
+
+    watch: {
+        incidents: {
+            handler(newVal) {
+                if (newVal && newVal.length) {
+                    console.log("Incidents ready:", newVal);
+                }
+            },
+            immediate: true
+        }
+    },
+
+    mounted() {
+        this.fetchIncidentReports();
     },
 
     methods: {
@@ -110,7 +124,9 @@ export default {
                 if (this.editMode) {
                     // WebSocket mode
                     const socket = this.$root.getSocket?.();
-                    if (!socket) throw new Error("Socket not initialized");
+                    if (!socket) {
+                        throw new Error("Socket not initialized");
+                    }
 
                     socket.emit("getStatusPageIncidentHistory", this.slug, (data) => {
                         if (data.ok) {
@@ -134,24 +150,8 @@ export default {
             }
         }
     },
-
-    watch: {
-        incidents: {
-            handler(newVal) {
-                if (newVal && newVal.length) {
-                    console.log("Incidents ready:", newVal);
-                }
-            },
-            immediate: true
-        }
-    },
-
-    mounted() {
-        this.fetchIncidentReports();
-    }
 };
 </script>
-
 
 <style lang="scss" scoped>
 @import "../assets/vars.scss";
@@ -160,7 +160,7 @@ export default {
     display: flex;
     flex-flow: column;
     padding: 10px 0;
-    
+
     .incident-item {
         display: flex;
 
@@ -171,7 +171,7 @@ export default {
         &:last-child .incident-timeline{
             border-radius: 0 0 10px 10px;
         }
-        
+
         .incident-timeline {
             height: auto;
             width: 4px;
@@ -181,7 +181,7 @@ export default {
             body.dark & {
                 background-color: #191f29
             }
-            
+
             .incident-timeline-icon {
                 position: relative;
                 top: calc(50% - 14px);
@@ -199,7 +199,7 @@ export default {
                     border: solid 2px #444444;
                     background-color: #444444
                 }
-                
+
                 .primary {
                     color: $primary;
                 }
@@ -215,11 +215,11 @@ export default {
                 .info {
                     color: var(--bs-info);
                 }
-                
+
                 .light {
                     color: #ffffff;
                 }
-                
+
                 .dark {
                     color: #444444;
                     background-color: #e4e4e4;
@@ -227,10 +227,10 @@ export default {
                 }
             }
         }
-    
+
         .incident-card {
             width: 100%;
-            
+
             box-shadow: 0 15px 70px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             padding: 10px;
@@ -239,28 +239,28 @@ export default {
             body.dark & {
                 background-color: #0d1117
             }
-    
+
             .incident-header {
                 display: flex;
                 align-items: stretch;
                 justify-content: space-between;
                 padding-bottom: 10px;
-                
+
                 .incident-header-datetime {
                     font-size: 12px;
                 }
             }
-            
+
             p {
                 word-break: break-all;
             }
         }
     }
-    
+
     .incident-timeline-end {
         height: 50px;
         width: 4px;
-        
+
         border-left: 4px #f3f3f3 dashed;
 
         body.dark & {
@@ -268,6 +268,5 @@ export default {
         }
     }
 }
-
 
 </style>

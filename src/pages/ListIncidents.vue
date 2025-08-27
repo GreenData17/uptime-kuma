@@ -1,7 +1,7 @@
 <template>
     <div class="incident-report-container">
         <h1>{{ $t("Incident Reports") }}</h1>
-        <incident-list hideViewHistoryPage :slug="this.$route.params.slug"/>
+        <incident-list hideViewHistoryPage :slug="$route.params.slug" />
     </div>
 </template>
 
@@ -9,7 +9,7 @@
 import IncidentList from "../components/IncidentList.vue";
 
 export default {
-    components: {IncidentList},
+    components: { IncidentList },
     data() {
         return {
             slug: null,

@@ -100,7 +100,7 @@ library.add(
     faCertificate,
     faCalendarAlt,
     faExclamationCircle,
-    faInfoCircle
+    faInfoCircle,
 );
 
 export { FontAwesomeIcon };

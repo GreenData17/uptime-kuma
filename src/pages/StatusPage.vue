@@ -334,7 +334,7 @@
             <div class="mb-4">
                 <h2>{{ $t("Incident Reports") }}</h2>
 
-                <IncidentList :slug="this.slug"/>
+                <IncidentList :slug="slug" />
             </div>
 
             <footer class="mt-5 mb-4">
@@ -739,7 +739,7 @@ export default {
         });
 
         this.updateHeartbeatList();
-        
+
         // Go to edit page if ?edit present
         // null means ?edit present, but no value
         if (this.$route.query.edit || this.$route.query.edit === null) {
@@ -805,7 +805,7 @@ export default {
                 });
             }
         },
-        
+
         /**
          * Setup timer to display countdown to refresh
          * @returns {void}
