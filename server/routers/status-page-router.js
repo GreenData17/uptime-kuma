@@ -62,6 +62,34 @@ router.get("/api/status-page/:slug", cache("5 minutes"), async (request, respons
     }
 });
 
+router.get("/api/status-page/:slug/incidents", cache("1 minutes"), async (request, response) => {
+    allowDevAllOrigin(response);
+
+    let incidentReportList;
+
+    try {
+        let slug = request.params.slug;
+        slug = slug.toLowerCase();
+        let statusPageID = await StatusPage.slugToID(slug);
+
+        incidentReportList = await R.getAll(`
+            SELECT * FROM incident
+            WHERE incident.status_page_id = ?
+            ORDER BY incident.created_date DESC
+        `, [
+            statusPageID
+        ]);
+    } catch (error) {
+        sendHttpError(response, error.message);
+    }
+
+    response.json({
+        incidents: incidentReportList,
+        isLoading: false,
+        error: null,
+    });
+});
+
 // Status Page Polling Data
 // Can fetch only if published
 router.get("/api/status-page/heartbeat/:slug", cache("1 minutes"), async (request, response) => {
