@@ -96,7 +96,7 @@ export default {
          * A quick and dirty way to convert the database naming convention
          * into javascript naming convention
          * notice: might want to add this to the util file?
-         * @param obj any kind of js object from the database
+         * @param {any} obj any kind of js object from the database
          * @returns {{}|*} converted js object with js naming convention
          */
         snakeToCamel(obj) {
